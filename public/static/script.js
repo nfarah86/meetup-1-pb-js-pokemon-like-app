@@ -30,47 +30,23 @@ var output = document.getElementById("out");
     var map = L.mapbox.map('map', 'mapbox.streets')
         .setView([lat1, long1], 25);
 
-   // make a get request to nodal to get json
-
-    var geoJson = [{
-          type: 'Feature',
-          geometry: {
-              type: 'Point',
-              coordinates: [long1, lat1]
-          },
-          properties: {
-              "icon": {
-                  "iconUrl": "https://www.mapbox.com/mapbox.js/assets/images/astronaut2.png",
-                  "iconSize": [25, 25], // size of the icon
-                  "iconAnchor": [30, 30], // point of the icon which will correspond to marker's location
-                  "className": "dot"
+       $.get("http://localhost:3000/pokemon_jsons", function(data, status){
+        for (var i = 0; i < data.data.length; i++) {
+              if (data.data[i].created_at) {
+                  delete data.data[i].created_at;
+              } 
+              if (data.data[i].updated_at) {
+                  delete data.data[i].updated_at;
               }
-          }
-        },
-        {
-            type: "Feature",
-            geometry: {
-              type: "Point",
-              coordinates: [-122.413682,37.775408]
-            },
-            properties: {
-              "icon": {
-                  "iconUrl": "https://www.mapbox.com/mapbox.js/assets/images/astronaut2.png",
-                  "iconSize": [50, 50], // size of the icon
-                  "iconAnchor": [25, 25], // point of the icon which will correspond to marker's location
-                  "className": "dot"
-              }
-            }
-    }];
+        }
+       var geoJson = data.data;
 
+      var myLayer = L.mapbox.featureLayer().addTo(map);
+      myLayer.setGeoJSON(geoJson);
 
-
-    var myLayer = L.mapbox.featureLayer().addTo(map);
-
-    myLayer.setGeoJSON(geoJson);
 
       function calcDistance(lat1, lat2, long1, long2) {
-          var R = 6371e3; // metres
+          var R = 6371e3; // meters
           var Δφ = toRadians(lat2-lat1);
           var Δλ = toRadians(long2-long1);
 
@@ -103,6 +79,7 @@ var output = document.getElementById("out");
             e.layer.feature.properties.icon['iconUrl'] = 'http://vignette2.wikia.nocookie.net/pokemon-fano/images/6/6f/Poke_Ball.png/revision/latest?cb=20140520015336';
             myLayer.setGeoJSON(geoJson);
       }
+    });
     });
   }
 }
