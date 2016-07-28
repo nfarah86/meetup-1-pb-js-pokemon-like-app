@@ -26,57 +26,55 @@ var output = document.getElementById("out");
     function mapLocation(latitude, longitude) {
 
 
-L.mapbox.accessToken = 'pk.eyJ1IjoibmFkaW5lMTIxMiIsImEiOiJjaXI1cmh6b2IwMDh4ZzdubnRqdDFyNXlwIn0.mVYNJqMFyiQqXlKFpXj3Sg';
-var map = L.mapbox.map('map', 'mapbox.streets')
-    .setView([latitude, longitude], 15);
+    L.mapbox.accessToken = 'pk.eyJ1IjoibmFkaW5lMTIxMiIsImEiOiJjaXI1cmh6b2IwMDh4ZzdubnRqdDFyNXlwIn0.mVYNJqMFyiQqXlKFpXj3Sg';
+    var map = L.mapbox.map('map', 'mapbox.streets')
+        .setView([latitude, longitude], 25);
 
-var geoJson = [{
-      type: 'Feature',
-      geometry: {
-          type: 'Point',
-          coordinates: [longitude, latitude]
-      },
-      properties: {
-          // title: 'Marker One',
-          // 'marker-color': '#bbb'
-          "icon1": {
-              "iconUrl": "https://www.mapbox.com/mapbox.js/assets/images/astronaut2.png",
-
-              "iconSize": [50, 50], // size of the icon
-              "iconAnchor": [25, 25], // point of the icon which will correspond to marker's location
-              "popupAnchor": [0, -25], // point from which the popup should open relative to the iconAnchor
-              "className": "dot"
-              }
-      }
-}];
+    var geoJson = [{
+          type: 'Feature',
+          geometry: {
+              type: 'Point',
+              coordinates: [longitude, latitude]
+          },
+          properties: {
+              // title: 'Marker One',
+              // 'marker-color': '#bbb'
+              "icon1": {
+                  "iconUrl": "https://www.mapbox.com/mapbox.js/assets/images/astronaut2.png",
+                  "iconSize": [25, 25], // size of the icon
+                  "iconAnchor": [30, 30], // point of the icon which will correspond to marker's location
+                  "className": "dot"
+                  }
+          }
+    }];
 
 
 
-var myLayer = L.mapbox.featureLayer().addTo(map);
+    var myLayer = L.mapbox.featureLayer().addTo(map);
 
-myLayer.setGeoJSON(geoJson);
-
-function catchPokemon() {
-    for (var i = 0; i < geoJson.length; i++) {
-        geoJson[i].properties.icon1['iconUrl'] = geoJson[i].properties.icon1['oldIconUrl'] ||
-            geoJson[i].properties.icon1['iconUrl'];
-    }
-}
-
-myLayer.on('layeradd', function(e) {
-  var marker = e.layer,
-      feature = marker.feature;
-  marker.setIcon(L.icon(feature.properties.icon1));
-});
-
-myLayer.setGeoJSON(geoJson);
-
-myLayer.on('click', function(e) {
-    catchPokemon();
-    e.layer.feature.properties['oldIconUrl'] = e.layer.feature.properties.icon1['iconUrl'];
-    e.layer.feature.properties.icon1['iconUrl'] = 'http://vignette2.wikia.nocookie.net/pokemon-fano/images/6/6f/Poke_Ball.png/revision/latest?cb=20140520015336';
     myLayer.setGeoJSON(geoJson);
-});
+
+    function catchPokemon() {
+        for (var i = 0; i < geoJson.length; i++) {
+            geoJson[i].properties.icon1['iconUrl'] = geoJson[i].properties.icon1['oldIconUrl'] ||
+                geoJson[i].properties.icon1['iconUrl'];
+        }
+    }
+
+    myLayer.on('layeradd', function(e) {
+      var marker = e.layer,
+          feature = marker.feature;
+      marker.setIcon(L.icon(feature.properties.icon1));
+    });
+
+    myLayer.setGeoJSON(geoJson);
+
+    myLayer.on('click', function(e) {
+        catchPokemon();
+        e.layer.feature.properties['oldIconUrl'] = e.layer.feature.properties.icon1['iconUrl'];
+        e.layer.feature.properties.icon1['iconUrl'] = 'http://vignette2.wikia.nocookie.net/pokemon-fano/images/6/6f/Poke_Ball.png/revision/latest?cb=20140520015336';
+        myLayer.setGeoJSON(geoJson);
+    });
 
 }
 
