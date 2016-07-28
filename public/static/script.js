@@ -8,12 +8,12 @@ var output = document.getElementById("out");
     }
 
       function success(position) {
-      var latitude  = position.coords.latitude;
-      var longitude = position.coords.longitude;
+      var lat1  = position.coords.latitude;
+      var long1 = position.coords.longitude;
 
-      output.innerHTML = '<p>Latitude is ' + latitude + '° <br>Longitude is ' + longitude + '°</p>';
+      output.innerHTML = '<p>Latitude is ' + lat1 + '° <br>Longitude is ' + long1 + '°</p>';
 
-      mapLocation(latitude, longitude);
+      mapLocation(lat1, long1);
     };
 
     function error() {
@@ -23,29 +23,44 @@ var output = document.getElementById("out");
     output.innerHTML = "<p>Locating…</p>";
     navigator.geolocation.getCurrentPosition(success, error);
   
-    function mapLocation(latitude, longitude) {
+    function mapLocation(lat1, long1) {
 
 
     L.mapbox.accessToken = 'pk.eyJ1IjoibmFkaW5lMTIxMiIsImEiOiJjaXI1cmh6b2IwMDh4ZzdubnRqdDFyNXlwIn0.mVYNJqMFyiQqXlKFpXj3Sg';
     var map = L.mapbox.map('map', 'mapbox.streets')
-        .setView([latitude, longitude], 25);
+        .setView([lat1, long1], 25);
+
+   // make a get request to nodal to get json
 
     var geoJson = [{
           type: 'Feature',
           geometry: {
               type: 'Point',
-              coordinates: [longitude, latitude]
+              coordinates: [long1, lat1]
           },
           properties: {
-              // title: 'Marker One',
-              // 'marker-color': '#bbb'
-              "icon1": {
+              "icon": {
                   "iconUrl": "https://www.mapbox.com/mapbox.js/assets/images/astronaut2.png",
                   "iconSize": [25, 25], // size of the icon
                   "iconAnchor": [30, 30], // point of the icon which will correspond to marker's location
                   "className": "dot"
-                  }
+              }
           }
+        },
+        {
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [-122.413682,37.775408]
+            },
+            properties: {
+              "icon": {
+                  "iconUrl": "https://www.mapbox.com/mapbox.js/assets/images/astronaut2.png",
+                  "iconSize": [50, 50], // size of the icon
+                  "iconAnchor": [25, 25], // point of the icon which will correspond to marker's location
+                  "className": "dot"
+              }
+            }
     }];
 
 
@@ -54,95 +69,40 @@ var output = document.getElementById("out");
 
     myLayer.setGeoJSON(geoJson);
 
-    function catchPokemon() {
-        for (var i = 0; i < geoJson.length; i++) {
-            geoJson[i].properties.icon1['iconUrl'] = geoJson[i].properties.icon1['oldIconUrl'] ||
-                geoJson[i].properties.icon1['iconUrl'];
-        }
-    }
+      function calcDistance(lat1, lat2, long1, long2) {
+          var R = 6371e3; // metres
+          var Δφ = toRadians(lat2-lat1);
+          var Δλ = toRadians(long2-long1);
 
-    myLayer.on('layeradd', function(e) {
+          var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                  Math.cos(lat1) * Math.cos(lat2) *
+                  Math.sin(Δλ/2) * Math.sin(Δλ/2);
+          var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+          var d = R * c;
+          console.log(d)
+          return d;
+      }
+
+      function toRadians(Value) {
+          return Value * Math.PI / 180;
+      }
+
+     myLayer.on('layeradd', function(e) {
       var marker = e.layer,
           feature = marker.feature;
-      marker.setIcon(L.icon(feature.properties.icon1));
+      marker.setIcon(L.icon(feature.properties.icon));
     });
 
-    myLayer.setGeoJSON(geoJson);
+     myLayer.setGeoJSON(geoJson);
 
     myLayer.on('click', function(e) {
-        catchPokemon();
-        e.layer.feature.properties['oldIconUrl'] = e.layer.feature.properties.icon1['iconUrl'];
-        e.layer.feature.properties.icon1['iconUrl'] = 'http://vignette2.wikia.nocookie.net/pokemon-fano/images/6/6f/Poke_Ball.png/revision/latest?cb=20140520015336';
-        myLayer.setGeoJSON(geoJson);
+       var pokemonCoordinates =  e.layer.feature.geometry.coordinates
+        var distance = calcDistance(lat1, pokemonCoordinates[1], long1, pokemonCoordinates[0]);
+        if (distance < 100) {
+            e.layer.feature.properties['oldIconUrl'] = e.layer.feature.properties.icon['iconUrl'];
+            e.layer.feature.properties.icon['iconUrl'] = 'http://vignette2.wikia.nocookie.net/pokemon-fano/images/6/6f/Poke_Ball.png/revision/latest?cb=20140520015336';
+            myLayer.setGeoJSON(geoJson);
+      }
     });
-
+  }
 }
-
-}
-
-
-
-        // var geojson = [
-        //   {
-        //     "type": "Feature",
-        //     "geometry": {
-        //       "type": "Point",
-        //       "coordinates": [-121.929, 37.730]
-        //     },
-        //     "properties": {
-        //       "title": "Mapbox DC",
-        //       "description": "1714 14th St NW, Washington DC",
-        //       "image": "https://farm9.staticflickr.com/8604/15769066303_3e4dcce464_n.jpg",
-        //       "icon": {
-        //           "iconUrl": "https://www.mapbox.com/mapbox.js/assets/images/astronaut1.png",
-        //           "iconSize": [50, 50], // size of the icon
-        //           "iconAnchor": [25, 25], // point of the icon which will correspond to marker's location
-        //           "popupAnchor": [0, -25], // point from which the popup should open relative to the iconAnchor
-        //           "className": "dot"
-        //       }
-        //     }
-        //   },
-        //   {
-        //     "type": "Feature",
-        //     "geometry": {
-        //       "type": "Point",
-        //       "coordinates": [-122.413682,37.775408]
-        //     },
-        //     "properties": {
-        //       "title": "Mapbox SF",
-        //       "description": "155 9th St, San Francisco",
-        //       "image": "https://farm9.staticflickr.com/8571/15844010757_63b093d527_n.jpg",
-        //       "icon": {
-        //           "iconUrl": "https://www.mapbox.com/mapbox.js/assets/images/astronaut2.png",
-        //           "iconSize": [50, 50], // size of the icon
-        //           "iconAnchor": [25, 25], // point of the icon which will correspond to marker's location
-        //           "popupAnchor": [0, -25], // point from which the popup should open relative to the iconAnchor
-        //           "className": "dot"
-        //       }
-        //     }
-        //   }
-        // ];
-
-
-  //       myLayer.on('layeradd', function(e) {
-
-
-
-  //         var marker = e.layer,
-  //           feature = marker.feature;
-  //         marker.setIcon(L.icon(feature.properties.icon));
-          
-
-  //         var content = '<h2>'+ feature.properties.title+'<\/h2>' + '<img src="'+feature.properties.image+'" alt="">';
-  //         marker.bindPopup(content);
-
-  //       });
-  //       myLayer.setGeoJSON(geojson);
-  //       mapTooltipsJS.scrollWheelZoom.disable();
-
-  // }
-
-
-
-// });
-
