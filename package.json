@@ -1,0 +1,14 @@
+{
+  "name": "pokemon-front-end",
+  "version": "1.0.0",
+  "description": "front-end app for pokemon-like app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "nadine",
+  "license": "ISC",
+  "dependencies": {
+    "mapbox": "^1.0.0-beta2"
+  }
+}
