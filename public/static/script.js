@@ -13,8 +13,6 @@ var output = document.getElementById("out");
 
       output.innerHTML = '<p>Latitude is ' + lat1 + '° <br>Longitude is ' + long1 + '°</p>';
 
-
-
       mapLocation(lat1, long1);
     };
 
@@ -32,6 +30,8 @@ var output = document.getElementById("out");
     var map = L.mapbox.map('map', 'mapbox.streets')
         .setView([lat1, long1], 25);
 
+   // make a get request to nodal to get json
+
     var geoJson = [{
           type: 'Feature',
           geometry: {
@@ -39,8 +39,6 @@ var output = document.getElementById("out");
               coordinates: [long1, lat1]
           },
           properties: {
-              // title: 'Marker One',
-              // 'marker-color': '#bbb'
               "icon": {
                   "iconUrl": "https://www.mapbox.com/mapbox.js/assets/images/astronaut2.png",
                   "iconSize": [25, 25], // size of the icon
@@ -52,8 +50,8 @@ var output = document.getElementById("out");
         {
             type: "Feature",
             geometry: {
-            type: "Point",
-            coordinates: [-122.413682,37.775408]
+              type: "Point",
+              coordinates: [-122.413682,37.775408]
             },
             properties: {
               "icon": {
@@ -89,12 +87,6 @@ var output = document.getElementById("out");
           return Value * Math.PI / 180;
       }
 
-      // make a get req. to nodal, and get gps coordinages, stringify
-      // calc distance 
-      // if less 300 ft, catch pokemon
-      // else can't catch it
-
-
      myLayer.on('layeradd', function(e) {
       var marker = e.layer,
           feature = marker.feature;
@@ -102,7 +94,6 @@ var output = document.getElementById("out");
     });
 
      myLayer.setGeoJSON(geoJson);
-
 
     myLayer.on('click', function(e) {
        var pokemonCoordinates =  e.layer.feature.geometry.coordinates
