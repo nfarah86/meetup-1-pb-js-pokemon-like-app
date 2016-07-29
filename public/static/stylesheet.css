@@ -1,7 +1,7 @@
-body { 
-  margin:0; 
+/*body { 
+  margin:20px; 
   padding:0; 
-}
+}*/
 
 #map { 
   position:absolute; 
@@ -10,6 +10,37 @@ body {
   left: 30px;
   right: 30px;
   width:90%; 
+}
+
+h2 {
+  text-align: center;
+  font-size: 300%;
+  font-weight: bold;
+  position: relative;
+}
+#out {
+  text-align: center;
+  font-weight: bold;
+  font-style: 250%;
+}
+
+button {
+
+    margin-left: 420px;
+
+    background-color: #4CAF50; 
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    display: inline;
+    font-size: 16px;
+}
+#pokemon-caught {
+  display: block;
+  text-align: left;
+  margin-left: 42px;
+  font-size: 100%;
+  font-weight: bold;
 }
 
 

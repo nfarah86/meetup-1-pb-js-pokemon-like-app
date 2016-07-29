@@ -1,6 +1,8 @@
 
 function geoFindMe(){
-var output = document.getElementById("out");
+
+
+  var output = document.getElementById("out");
 
     if (!navigator.geolocation){
       output.innerHTML = "<p>Geolocation is not supported by your browser</p>";
@@ -10,8 +12,6 @@ var output = document.getElementById("out");
       function success(position) {
       var lat1  = position.coords.latitude;
       var long1 = position.coords.longitude;
-
-      output.innerHTML = '<p>Latitude is ' + lat1 + '° <br>Longitude is ' + long1 + '°</p>';
 
       mapLocation(lat1, long1);
     };
@@ -26,9 +26,12 @@ var output = document.getElementById("out");
     function mapLocation(lat1, long1) {
 
 
-    L.mapbox.accessToken = 'pk.eyJ1IjoibmFkaW5lMTIxMiIsImEiOiJjaXI1cmh6b2IwMDh4ZzdubnRqdDFyNXlwIn0.mVYNJqMFyiQqXlKFpXj3Sg';
-    var map = L.mapbox.map('map', 'mapbox.streets')
+        L.mapbox.accessToken = 'pk.eyJ1IjoibmFkaW5lMTIxMiIsImEiOiJjaXI1cmh6b2IwMDh4ZzdubnRqdDFyNXlwIn0.mVYNJqMFyiQqXlKFpXj3Sg';
+        var map = L.mapbox.map('map', 'mapbox.streets')
         .setView([lat1, long1], 25);
+
+        var buttonPokemon = document.getElementById("pokemonButton");
+        buttonPokemon.innerHTML= "Catch Em!"
 
        $.get("http://localhost:3000/pokemon_jsons", function(data, status){
         for (var i = 0; i < data.data.length; i++) {
@@ -41,12 +44,12 @@ var output = document.getElementById("out");
         }
        var geoJson = data.data;
 
-      var myLayer = L.mapbox.featureLayer().addTo(map);
-      myLayer.setGeoJSON(geoJson);
+       var myLayer = L.mapbox.featureLayer().addTo(map);
+       myLayer.setGeoJSON(geoJson);
 
 
       function calcDistance(lat1, lat2, long1, long2) {
-          var R = 6371e3; // meters
+          var R = 6371e3; // mets
           var Δφ = toRadians(lat2-lat1);
           var Δλ = toRadians(long2-long1);
 
@@ -80,6 +83,6 @@ var output = document.getElementById("out");
             myLayer.setGeoJSON(geoJson);
       }
     });
-    });
-  }
+  });
+}
 }
